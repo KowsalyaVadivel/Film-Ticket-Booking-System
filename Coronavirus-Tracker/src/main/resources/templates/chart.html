@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+<title>COVID Chart</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+canvas{
+width:100%;
+height:500px;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>COVID Deaths by Country</h2>
+
+<canvas id="myChart"></canvas>
+
+<script th:inline="javascript">
+
+/*<![CDATA[*/
+
+var data = /*[[${data}]]*/ [];
+
+var countries = [];
+var deaths = [];
+
+data.forEach(function(item){
+    countries.push(item.country);
+    deaths.push(item.latestTotalDeaths);
+});
+
+var ctx = document.getElementById('myChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: countries,
+        datasets: [{
+            label: 'Total Deaths',
+            data: deaths,
+            backgroundColor: 'rgba(255,99,132,0.6)',
+            borderColor: 'rgba(255,99,132,1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive:true,
+        scales:{
+            y:{
+                beginAtZero:true
+            }
+        }
+    }
+});
+/*]]>*/
+
+</script>
+
+</body>
+</html>

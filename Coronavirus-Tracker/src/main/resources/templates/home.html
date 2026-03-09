@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Corona Virus Tracker application</title>
+    <meta charset="UTF-8" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css" 
+          rel="stylesheet" 
+          integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT" 
+          crossorigin="anonymous">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+<div class="jumbotron" style="background-image: url(/images/cv.jpg); background-size:cover;">
+	<div class="p-3 nb-2">
+    <h1 class="heading text-light">Corona Virus Tracker application</h1>
+    <p class="pera text-light">This Application lists the current number of deaths reported across the globe</p>
+    <div class="badge bg-danger text-light">
+        <h1 class="display-4" th:text="${totalDeathsReported}">0</h1>
+        <p class="lead">Total deaths reported as of Today</p>
+        <div class="text-center mt-3">
+    <a th:href="@{/viewChart}" class="btn btn-primary">View Chart</a>
+</div>
+    </div>
+</div>
+</div>
+<div class="container mb-5">
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>State</th>
+            <th>Country</th>
+            <th>Total Deaths Reported</th>
+            <th>Changes Since Last Day</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="locationstate : ${LocationStates}">
+            <td th:text="${locationstate.state}"></td>
+            <td th:text="${locationstate.country}"></td>
+            <td th:text="${locationstate.latestTotalDeaths}">0</td>
+            <td th:text="${locationstate.differFromPrevay}">0</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Chart Container (Initially Hidden) -->
+<div class="container">
+    <canvas id="deathsChart" style="display:none;"></canvas>
+</div>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    var chartData = /*[[${LocationStates}]]*/ [];
+
+    document.getElementById('showChartBtn').addEventListener('click', function() {
+       
+        var countries = [];
+        var deaths = [];
+        chartData.forEach(function(item) {
+            countries.push(item.country);
+            deaths.push(item.latestTotalDeaths);
+        });
+
+       
+        var canvas = document.getElementById('deathsChart');
+        canvas.style.display = 'block';
+
+        
+        var ctx = canvas.getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: countries,
+                datasets: [{
+                    label: 'Total Deaths',
+                    data: deaths,
+                    backgroundColor: 'rgba(255,99,132,0.6)',
+                    borderColor: 'rgba(255,99,132,1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: true
+                    }
+                }
+            }
+        });
+
+        
+        this.disabled = true;
+    });
+/*]]>*/
+</script>
+
+</body>
+</html>
