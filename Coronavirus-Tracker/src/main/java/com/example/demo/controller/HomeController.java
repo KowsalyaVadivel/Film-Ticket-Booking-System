@@ -30,7 +30,7 @@ public class HomeController
 	}
 
 
-	@GetMapping("/")
+	@GetMapping( "/")
 	public String home(Model model)
 	{
 		List<LocationStates> allstates=crnService.getAllstates();
